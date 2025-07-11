@@ -19,13 +19,13 @@
     ></script>
     <div class="container">
       <h2>Student List</h2>
-
-      <a>Add Student</a>
+      <a href="{% url 'student_registration' %} ">Add Student</a>
       <table class="table">
         <thead>
           <tr>
             <th scope="col">#</th>
             <th scope="col">Name</th>
+            <th scope="col">Username</th>
             <th scope="col">Phone</th>
             <th scope="col">Address</th>
             <th scope="col">Action</th>
@@ -35,8 +35,9 @@
           {% for student in students %}
           <tr>
             <td>{{ student.id }}</td>
-            <td>{{ student.name }}</td>
-            <td>{{ student.phone }}</td>
+            <td>{{ student.last_name }} {{ student.first_name }}</td>
+            <td>{{ student.user.username }}</td>
+            <td>{{ student.phone_number }}</td>
             <td>{{ student.address }}</td>
             <td>
 
