@@ -4,5 +4,4 @@ from .models import User
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = [' username',' password']
-        widgets = {'password' : forms.PasswordInput(),}
+        fields = ['username', 'password']
