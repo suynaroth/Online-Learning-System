@@ -9,7 +9,6 @@ class Student(models.Model):
     address = models.TextField(blank=True, null=True)
     date_of_birth = models.DateField()
 
-
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
