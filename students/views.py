@@ -24,7 +24,7 @@ def student_registration(request):
     else: # This block handles GET requests
         # For GET requests, instantiate empty forms
         student_form = StudentForm()
-        user_form = UserForm()
+        user_form = UserForm()  # Set initial role for the user form
     #will be executed for initial GET requests and also if POST forms are invalid (after the 'else' in the POST block)
     return render(request, 'students/student_form.html', {'student_form': student_form,'user_form': user_form})
 
@@ -33,6 +33,8 @@ def edit_student(request, pk):
     user = student.user
     student_form = StudentForm(request.POST or None,instance=student)
     user_form = UserForm(request.POST or None, instance=user)
+    if 'role' in user_form.fields:
+        user_form.fields.pop('role')  # Remove role field to prevent editing role
     if student_form.is_valid() and user_form.is_valid():
         student = student_form.save(commit=False)
         user = user_form.save()
@@ -41,4 +43,9 @@ def edit_student(request, pk):
         return redirect('student_list')
     return render(request, 'students/edit_student.html', {'student_form': student_form,'user_form': user_form})
 
-    
+def delete_student(request, pk):
+    student = Student.objects.filter(pk=pk).first()
+    if request.method == 'POST':
+        student.delete()
+        return redirect('student_list')
+    return render(request, 'students/delete_student.html', {'student': student})  
