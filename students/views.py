@@ -25,14 +25,20 @@ def student_registration(request):
         # For GET requests, instantiate empty forms
         student_form = StudentForm()
         user_form = UserForm()
-       
     #will be executed for initial GET requests and also if POST forms are invalid (after the 'else' in the POST block)
     return render(request, 'students/student_form.html', {'student_form': student_form,'user_form': user_form})
 
 def edit_student(request, pk):
     student = Student.objects.filter(pk=pk).first()
-    form = StudentForm(request.POST or None,instance=student)
-    if form.is_valid():
-        form.save
+    user = student.user
+    student_form = StudentForm(request.POST or None,instance=student)
+    user_form = UserForm(request.POST or None, instance=user)
+    if student_form.is_valid() and user_form.is_valid():
+        student = student_form.save(commit=False)
+        user = user_form.save()
+        student.user = user
+        student.save()
+        return redirect('student_list')
+    return render(request, 'students/edit_student.html', {'student_form': student_form,'user_form': user_form})
 
     
