@@ -4,7 +4,7 @@ from .models import Course, Category
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ['title', 'description', 'category', 'tags', 'price','created_at', 'updated_at']
+        fields = ['title', 'description', 'category', 'tags', 'price',]
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4, 'cols': 40}),
             'tags': forms.CheckboxSelectMultiple(),
