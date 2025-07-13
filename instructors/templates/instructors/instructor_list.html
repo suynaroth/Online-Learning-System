@@ -18,8 +18,8 @@
       crossorigin="anonymous"
     ></script>
     <div class="container">
-      <h2>Student List</h2>
-      <a href="{% url 'student_registration' %} ">Add Student</a>
+      <h2>Instructor List</h2>
+      <a href="{% url 'instructor_profile' %} ">Add Instructor</a>
       <table class="table">
         <thead>
           <tr>
@@ -28,20 +28,22 @@
             <th scope="col">Username</th>
             <th scope="col">Phone</th>
             <th scope="col">Address</th>
+            <th scope="col">Expertise</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
-          {% for student in students %}
+          {% for instructor in instructors %}
           <tr>
-            <td>{{ student.id }}</td>
-            <td>{{ student.last_name }} {{ student.first_name }}</td>
-            <td>{{ student.user.username }}</td>
-            <td>{{ student.phone_number }}</td>
-            <td>{{ student.address }}</td>
+            <td>{{ instructor.id }}</td>
+            <td>{{ instructor.last_name }} {{ instructor.first_name }}</td>
+            <td>{{ instructor.user.username }}</td>
+            <td>{{ instructor.phone_number }}</td>
+            <td>{{ instructor.address }}</td>
+            <td>{{ instructor.expertise }}</td>
             <td>
-                <a href="{% url 'edit_student' student.id %} ">Edit</a>
-                <a href="{% url 'delete_student' student.id %} ">Delete</a>
+                <a href="{% url 'instructor_edit' instructor.id %} ">Edit</a>
+                <a href="{% url 'instructor_delete' instructor.id %} ">Delete</a>
             </td>
           </tr>
           {% endfor %}
