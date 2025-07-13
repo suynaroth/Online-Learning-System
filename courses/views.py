@@ -19,4 +19,15 @@ def create_course(request):
 
 def course_list(request):
     courses = Course.objects.all()
+
+    #for filter by category
+    category_filter = request.GET.get('category')
+    if category_filter:
+        courses = courses.filter(category__name=category_filter)
+
+    #for filter by tag
+    tag_filter = request.GET.get('tag')
+    if tag_filter:
+        courses = courses.filter(tags__name=tag_filter) 
+        
     return render(request, 'courses/courses_list.html', {'courses': courses})
