@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from .forms import CourseForm
-from .models import Course
+from .models import Course,Tag,Instructor,Category
 
 def create_course(request):
     if request.method == 'POST':
@@ -19,15 +19,27 @@ def create_course(request):
 
 def course_list(request):
     courses = Course.objects.all()
+    tags = Tag.objects.all()
+    categories = Category.objects.all()
+    instructors = Instructor.objects.all()
 
     #for filter by category
     category_filter = request.GET.get('category')
     if category_filter:
-        courses = courses.filter(category__name=category_filter)
+        courses = courses.filter(category_id = category_filter)
 
     #for filter by tag
     tag_filter = request.GET.get('tag')
     if tag_filter:
-        courses = courses.filter(tags__name=tag_filter) 
+        courses = courses.filter(tags_id = tag_filter) 
+
+    #filter by instructor
+    instructor_filter = request.GET.get('instructors')
+    if instructor_filter:
+        courses = courses.filter(instructors_id = instructor_filter)
         
-    return render(request, 'courses/courses_list.html', {'courses': courses})
+    return render(request, 'courses/courses_list.html', {'courses': courses,
+                                                         'tags': tags,
+                                                         'categories': categories,
+                                                         'instructors': instructors
+                                                         })
