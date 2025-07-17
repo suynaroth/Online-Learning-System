@@ -34,7 +34,7 @@ def course_list(request):
         courses = courses.filter(tags_id = tag_filter) 
 
     #filter by instructor
-    instructor_filter = request.GET.get('instructors')
+    instructor_filter = request.GET.get('instructor')
     if instructor_filter:
         courses = courses.filter(instructors_id = instructor_filter)
         
