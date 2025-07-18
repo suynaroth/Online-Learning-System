@@ -1,5 +1,5 @@
 from django import forms
-from .models import Course, Category, Tag, Lesson, Assignment
+from .models import Course, Category, Tag, Lesson, Assignment,Submission
 
 class CourseForm(forms.ModelForm):
     class Meta:
@@ -67,3 +67,16 @@ class AssignmentForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # limit courses dynamically
         self.fields['course'].queryset = Course.objects.all()
+
+class SubmissionForm(forms.ModelForm):
+    class Meta:
+        model = Submission
+        fields = ['assignment', 'student', 'file']
+        widgets = {
+            'file': forms.ClearableFileInput(),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # limit assignments dynamically
+        self.fields['assignment'].queryset = Assignment.objects.all()

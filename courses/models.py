@@ -68,4 +68,18 @@ class Assignment(models.Model):
         return self.title
     
     class Meta:
-        ordering = ['due_date']                                                                   
+        ordering = ['due_date']     
+
+class Submission(models.Model):
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='submissions')
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='submissions')
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    file = models.FileField(upload_to='submissions/')
+    grade = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+
+    def __str__(self):
+        return f'Submission by {self.student.username} for {self.assignment.title}'
+    
+    class Meta:
+        unique_together = ('assignment', 'student')  # A student can submit only once per assignment
+        ordering = ['-submitted_at']  # Most recent submissions first                                                              
