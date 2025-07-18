@@ -40,3 +40,32 @@ class Course(models.Model):
     
     class Meta:
         ordering = ['title']
+
+class Lesson(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+    video_url = models.URLField(blank=True, null=True)  # URL to the lesson video
+    resource = models.FileField(upload_to='resources/', blank=True, null=True)  # Optional resource file
+    order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)    
+
+    def __str__(self):
+        return self.title
+    
+    class Meta:
+        ordering = ['order']
+        unique_together = ('course', 'order') #lessons in a course have unique order numbers
+
+class Assignment(models.Model):
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='assignments')
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+    due_date = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+    
+    class Meta:
+        ordering = ['due_date']                                                                   
