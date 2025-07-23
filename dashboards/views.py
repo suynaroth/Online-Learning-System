@@ -9,7 +9,7 @@ def student_dashboard(request):
         student = request.user.student
         enrolled_courses = student.enrolled_courses.all()
 
-        homework = Assignment.objects.filter(lesson__course__in=enrolled_courses, student=student)
+        homework = Assignment.objects.filter(lesson__course__in=enrolled_courses)
 
         all_courses = Course.objects.exclude(id__in=enrolled_courses.values_list('id', flat=True))
 
