@@ -4,10 +4,12 @@ from django.http import HttpResponseForbidden  # Optional: for access denied
 
 @login_required
 def student_dashboard(request):
-    if request.user.role == 'student':
+    if hasattr (request.user, 'student'):
+
+        student = request.user.student
+        enrolled_courses = student.enrolled_courses.all()
+        
         return render(request, 'dashboards/student_dashboard.html')
-    else:
-        return HttpResponseForbidden("You are not authorized to view this page.")
         
 
 # @login_required

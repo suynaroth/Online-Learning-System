@@ -61,6 +61,7 @@ class Assignment(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='assignments')
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
+    max_grade = models.DecimalField(max_digits=5, decimal_places=2, default=100.00)
     due_date = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
 
