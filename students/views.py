@@ -35,8 +35,6 @@ def edit_student(request, pk):
     user = student.user
     student_form = StudentForm(request.POST or None,instance=student)
     user_form = UserForm(request.POST or None, instance=user)
-    if 'role' in user_form.fields:
-        user_form.fields.pop('role')  # Remove role field to prevent editing role
     if student_form.is_valid() and user_form.is_valid():
         student = student_form.save(commit=False)
         user = user_form.save()

@@ -1,11 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.http import HttpResponseForbidden  # Optional: for access denied
 
 @login_required
 def student_dashboard(request):
-    if request.user.role != 'student':
-        return redirect('home')
-    return render(request, 'dashboards/student_dashboard.html')
+    if request.user.role == 'student':
+        return render(request, 'dashboards/student_dashboard.html')
+    else:
+        return HttpResponseForbidden("You are not authorized to view this page.")
         
 
 # @login_required
