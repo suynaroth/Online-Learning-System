@@ -45,3 +45,27 @@ def course_list(request):
                                                          'categories': categories,
                                                          'instructors': instructors
                                                          })
+
+def category_list(request):
+    categories = Category.objects.all()
+    return render(request, 'courses/category_list.html', {'categories': categories})
+
+def add_category(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            Category.objects.create(name=name)
+            return redirect('category_list')
+    return render(request, 'courses/add_category.html')
+
+def tag_list(request):
+    tags = Tag.objects.all()
+    return render(request, 'courses/tag_list.html', {'tags': tags})
+
+def add_tag(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            Tag.objects.create(name=name)
+            return redirect('tag_list')
+    return render(request, 'courses/add_tag.html')
