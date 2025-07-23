@@ -1,4 +1,5 @@
 from django.shortcuts import render,redirect
+from django.contrib.auth.decorators import login_required
 from .forms import CourseForm
 from .models import Course,Tag,Instructor,Category
 
@@ -17,6 +18,7 @@ def create_course(request):
     
     return render(request, 'courses/create_course.html', {'form': form})
 
+@login_required
 def course_list(request):
     courses = Course.objects.all()
     tags = Tag.objects.all()

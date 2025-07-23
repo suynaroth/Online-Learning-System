@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-# @login_required
+@login_required
 def student_dashboard(request):
+    if request.user.role != 'student':
+        return redirect('home')
     return render(request, 'dashboards/student_dashboard.html')
-    # if request.user.role != 'student':
         
 
 # @login_required

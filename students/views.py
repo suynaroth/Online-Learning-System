@@ -16,7 +16,9 @@ def student_registration(request):
         
         if student_form.is_valid() and user_form.is_valid():
             # Create user and student
-            user = user_form.save()
+            user = user_form.save(commit=False)
+            user.role = 'student'
+            user.save()
             student = student_form.save(commit=False) #save in memory for temp
             student.user = user      # Link student to the saved user
             student.save()
@@ -46,6 +48,7 @@ def edit_student(request, pk):
 def delete_student(request, pk):
     student = Student.objects.filter(pk=pk).first()
     if request.method == 'POST':
-        student.delete()
+        student.user.delete()
+        # student.delete()
         return redirect('student_list')
     return render(request, 'students/delete_student.html', {'student': student})  
