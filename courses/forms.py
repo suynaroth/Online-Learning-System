@@ -71,9 +71,9 @@ class AssignmentForm(forms.ModelForm):
 class SubmissionForm(forms.ModelForm):
     class Meta:
         model = Submission
-        fields = ['assignment', 'student', 'file']
+        fields = ['assignment', 'file']
         widgets = {
-            'file': forms.ClearableFileInput(),
+            'file': forms.ClearableFileInput(attrs={'accept': '.pdf,.doc,.docx,.txt'}),
         }
     
     def __init__(self, *args, **kwargs):

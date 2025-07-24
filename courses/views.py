@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
-from .forms import CourseForm
-from .models import Course,Tag,Instructor,Category
+from .forms import CourseForm,SubmissionForm,CategoryForm,TagForm,LessonForm,AssignmentForm
+from .models import Course,Tag,Instructor,Category,Assignment, Submission,Lesson
 
 def create_course(request):
     if request.method == 'POST':
@@ -24,17 +24,14 @@ def course_list(request):
     tags = Tag.objects.all()
     categories = Category.objects.all()
     instructors = Instructor.objects.all()
-
     #for filter by category
     category_filter = request.GET.get('category')
     if category_filter:
         courses = courses.filter(category_id = category_filter)
-
     #for filter by tag
     tag_filter = request.GET.get('tag')
     if tag_filter:
         courses = courses.filter(tags_id = tag_filter) 
-
     #filter by instructor
     instructor_filter = request.GET.get('instructor')
     if instructor_filter:
@@ -52,11 +49,30 @@ def category_list(request):
 
 def add_category(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        if name:
-            Category.objects.create(name=name)
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
             return redirect('category_list')
-    return render(request, 'courses/add_category.html')
+    else:
+        form = CategoryForm()
+    return render(request, 'courses/add_category.html', {'form': form, 'title': 'Add Category'})
+
+
+
+def edit_category(request, category_id):
+    category = Category.objects.get(id=category_id)
+    category_form = CategoryForm(request.POST or None, instance=category)
+    if category_form.is_valid():    
+        category_form.save()
+        return redirect('category_list')
+    return render(request, 'courses/edit_category.html', {'category_form': category_form, 'title': 'Edit Category'})
+
+def delete_category(request, category_id):
+    category = Category.objects.get(id=category_id)
+    if request.method == 'POST':
+        category.delete()
+        return redirect('category_list')
+    return render(request, 'courses/delete_category.html', {'category': category})
 
 def tag_list(request):
     tags = Tag.objects.all()
@@ -69,3 +85,30 @@ def add_tag(request):
             Tag.objects.create(name=name)
             return redirect('tag_list')
     return render(request, 'courses/add_tag.html')
+
+def assignment_list(request, lesson_id):
+    lesson = Lesson.objects.get(id=lesson_id)
+    assignments = lesson.assignments.all()
+    return render(request, 'courses/assignment_list.html', {'lesson': lesson, 'assignments': assignments})
+
+def assignment_detail(request, assignment_id):
+    assignment = Assignment.objects.get(id=assignment_id)
+    submissions = assignment.submissions.all()
+    return render(request, 'courses/assignment_detail.html', {'assignment': assignment, 'submissions': submissions})
+
+def submit_assignment(request, assignment_id):
+    assignment = Assignment.objects.get(id=assignment_id)
+    student = request.user.student 
+
+    submission, created = Submission.objects.get_or_create(
+        assignment=assignment,
+        student=student
+    )
+    if request.method == 'POST':
+        form = SubmissionForm(request.POST, request.FILES, instance=submission)
+        if form.is_valid():
+            form.save()
+            return redirect('student_dashboard')  # Redirect to a student dashboard or assignment detail page
+    else:
+        form = SubmissionForm(instance=submission)
+    return render(request, 'courses/submit_assignment.html', {'form': form, 'assignment': assignment})

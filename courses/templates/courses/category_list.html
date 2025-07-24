@@ -24,7 +24,7 @@
       </li>
       <!-- Add more links here -->
       <li class="nav-item">
-        <a href="{% url 'course_list' %}" class="nav-link active" aria-current="page">
+        <a href="{% url 'course_list' %}" class="nav-link" aria-current="page">
           <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true">
             <use xlink:href="#home"></use>
           </svg>
@@ -36,50 +36,46 @@
           <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true">
             <use xlink:href="#home"></use>
           </svg>
-          Category
+          Assignments
         </a>
       </li>
       <li class="nav-item">
-        <a href="#" class="nav-link" aria-current="page">
+        <a href="{% url 'category_list'}" class="nav-link active" aria-current="page">
           <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true">
             <use xlink:href="#home"></use>
           </svg>
-          Assignments
+          Categories
         </a>
       </li>
     </ul>
   </div>
   <div class="container">
-    <h2>Course List</h2>
-    <a href="{% url 'create_course' %} ">Add Course</a>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Title</th>
-          <th scope="col">Category</th>
-          <th scope="col">Price</th>
-          <th scope="col">Date</th>
-          <th scope="col">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for course in courses %}
-        <tr>
-          <td>{{ course.id }}</td>
-          <td>{{ course.title }}</td>
-          <td>{{ course.category }}</td>
-          <td>{{ course.price }}</td>
-          <td>{{ course.created_at }}</td>
-          <td>
-            <form method="post" action="{% url 'enroll' course.id %}">
-            {% csrf_token %}
-            <button type="submit">Enroll</button>
-        </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
+    <h2>Category List</h2>
+    <a href="{% url 'add_category' %}">Add Category</a>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th style="width: 160px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+            <tr>
+                <td>{{ category.name }}</td>
+                <td>{{ category.description }}</td>
+                <td>
+                    <a href="{% url 'edit_category' category.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'delete_category' category.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No categories available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
   </div>
 </div>
