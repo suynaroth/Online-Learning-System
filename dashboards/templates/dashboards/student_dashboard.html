@@ -24,7 +24,7 @@
             </li>
             <!-- Add more links here -->
             <li class="nav-item">
-                <a href="{% url 'course_list' %}" class="nav-link" aria-current="page">
+                <a href="{% url 'student_course_list' %}" class="nav-link" aria-current="page">
                     <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true">
                         <use xlink:href="#home"></use>
                     </svg>
@@ -37,14 +37,6 @@
                         <use xlink:href="#home"></use>
                     </svg>
                     Assignments
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'category_list' %}" class="nav-link" aria-current="page">
-                    <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true">
-                        <use xlink:href="#home"></use>
-                    </svg>
-                    Categories
                 </a>
             </li>
         </ul>
@@ -93,7 +85,7 @@
                         </ul>
                     </div>
                     <div class="card-footer text-end">
-                        <a href="{% url 'course_list' %}" class="btn btn-link">See all</a>
+                        <a href="{% url 'student_course_list' %}" class="btn btn-link">See all</a>
                     </div>
                 </div>
             </div>
@@ -141,7 +133,7 @@
                         </ul>
                     </div>
                     <div class="card-footer text-end">
-                        <a href="{% url 'course_list' %}" class="btn btn-link">Browse all</a>
+                        <a href="{% url 'student_course_list' %}" class="btn btn-link">Browse all</a>
                     </div>
                 </div>
             </div>

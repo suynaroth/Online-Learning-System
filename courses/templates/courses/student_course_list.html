@@ -24,7 +24,7 @@
       </li>
       <!-- Add more links here -->
       <li class="nav-item">
-        <a href="{% url 'course_list' %}" class="nav-link active" aria-current="page">
+        <a href="{% url 'student_course_list' %}" class="nav-link active" aria-current="page">
           <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true">
             <use xlink:href="#home"></use>
           </svg>
@@ -42,6 +42,54 @@
     </ul>
   </div>
   <div class="container">
+    {% if messages %}
+    <div class="container mt-3">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <h2>My Enrolled Courses</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Title</th>
+          <th scope="col">Category</th>
+          <th scope="col">Price</th>
+          <th scope="col">Date Enrolled</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for course in enrolled_courses %}
+        <tr>
+          <td>{{ course.id }}</td>
+          <td>{{ course.title }}</td>
+          <td>{{ course.category.name }}</td>
+          <td>{{ course.price }}</td>
+          <td>
+            {% for enrollment in course.enrollments.all %}
+            {% if enrollment.student == request.user.student %}
+            {{ enrollment.date_enrolled|date:"Y-m-d" }}
+            {% endif %}
+            {% endfor %}
+          </td>
+          <td>
+            <a href="" class="btn btn-info btn-sm">View</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6">You are not enrolled in any courses yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
     <h2>Course List</h2>
     <table class="table">
       <thead>
@@ -55,7 +103,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for course in courses %}
+        {% for course in all_courses %}
         <tr>
           <td>{{ course.id }}</td>
           <td>{{ course.title }}</td>
@@ -63,7 +111,10 @@
           <td>{{ course.price }}</td>
           <td>{{ course.created_at }}</td>
           <td>
-
+            <form method="post" action="{% url 'enroll' course.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary">Enroll</button>
+            </form>
           </td>
         </tr>
         {% endfor %}

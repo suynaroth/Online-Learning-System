@@ -36,12 +36,25 @@ def course_list(request):
     instructor_filter = request.GET.get('instructor')
     if instructor_filter:
         courses = courses.filter(instructors_id = instructor_filter)
-        
     return render(request, 'courses/courses_list.html', {'courses': courses,
-                                                         'tags': tags,
-                                                         'categories': categories,
-                                                         'instructors': instructors
-                                                         })
+                                                             'tags': tags,
+                                                             'categories': categories,
+                                                             'instructors': instructors
+                                                             })
+@login_required
+def student_course_list(request):
+    if hasattr(request.user, 'student'):
+        student = request.user.student
+        all_courses = Course.objects.all()
+        enrolled_ids = student.enrolled_courses.values_list('id', flat=True)
+
+        return render(request, 'courses/student_course_list.html', {
+            'all_courses': all_courses,
+            'enrolled_ids': enrolled_ids,
+        })
+    else:
+        return redirect('/')
+
 
 def category_list(request):
     categories = Category.objects.all()
