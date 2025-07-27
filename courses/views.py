@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from .forms import CourseForm,SubmissionForm,CategoryForm,TagForm,LessonForm,AssignmentForm
 from .models import Course,Tag,Instructor,Category,Assignment, Submission,Lesson
+from enrollments.models import Enrollment
 
 def create_course(request):
     if request.method == 'POST':
@@ -45,13 +46,13 @@ def course_list(request):
 def student_course_list(request):
     if hasattr(request.user, 'student'):
         student = request.user.student
-        all_courses = Course.objects.all()
-        enrolled_ids = student.enrolled_courses.values_list('id', flat=True)
-
-        return render(request, 'courses/student_course_list.html', {
-            'all_courses': all_courses,
-            'enrolled_ids': enrolled_ids,
-        })
+        enrollments = Enrollment.objects.filter(student=student).select_related('course')
+        enrolled_courses = [enrollment.course for enrollment in enrollments]
+        context = {
+            'enrollments': enrollments,
+            'enrolled_courses': enrolled_courses,
+        }
+        return render(request, 'courses/student_course_list.html', context)
     else:
         return redirect('/')
 

@@ -1,22 +1,26 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from courses.models import Course, Assignment
+from enrollments.models import Enrollment
 
 @login_required
 def student_dashboard(request):
     if hasattr (request.user, 'student'):
 
         student = request.user.student
-        enrolled_courses = student.enrolled_courses.all()
+        enrollments = Enrollment.objects.filter(student=student).select_related('course')
+
+        enrolled_courses = [enrollment.course for enrollment in enrollments]
 
         homework = Assignment.objects.filter(lesson__course__in=enrolled_courses)
 
-        all_courses = Course.objects.exclude(id__in=enrolled_courses.values_list('id', flat=True))
+        other_courses = Course.objects.exclude(id__in=[c.id for c in enrolled_courses])
 
         context = {
+            'enrollments': enrollments,
             'enrolled_courses': enrolled_courses,
             'homework': homework,
-            'other_courses': all_courses,
+            'other_courses': other_courses,
         }
         
         return render(request, 'dashboards/student_dashboard.html', context)
