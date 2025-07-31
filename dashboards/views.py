@@ -27,16 +27,18 @@ def student_dashboard(request):
     else:
         return redirect('/')
         
+@login_required
+def instructor_dashboard(request):
+    if hasattr(request.user, 'instructor'):
+        instructor = request.user.instructor
+        courses = Course.objects.filter(instructor=instructor).select_related('course')
 
-# @login_required
-# def instructor_dashboard(request):
-#     if request.user.role != 'instructor':
-#         # return redirect('home')
-#     return render(request, 'dashboards/instructor_dashboard.html')
 
-# # @login_required
-# def employee_dashboard(request):
-#     if request.user.role != 'employee':
-#         # return redirect('home')
-#     return render(request, 'dashboards/employee_dashboard.html')
+        context = {
+            'courses': courses,
+        }
+        
+        return render(request, 'dashboards/instructor_dashboard.html', context)
+    else:
+        return redirect('/')
 

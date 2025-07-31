@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Courses{% endblock %}
+
+{% block content %}
+<!-- Sidebar -->
+<div class="d-flex">
+  <div class="flex-shrink-0 p-3 bg-body-tertiary" style="width: 280px; min-height: 100vh;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+      <svg class="bi pe-none me-2" width="40" height="32" aria-hidden="true">
+        <use xlink:href="#bootstrap"></use>
+      </svg>
+      <span class="fs-4">Sidebar</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item">
+        <a href="{% url 'instructor_dashboard' %}" class="nav-link" aria-current="page">
+          <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true">
+            <use xlink:href="#home"></use>
+          </svg>
+          Home
+        </a>
+      </li>
+      <!-- Add more links here -->
+      <li class="nav-item">
+        <a href="{% url 'instructor_course_list' %}" class="nav-link active" aria-current="page">
+          <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true">
+            <use xlink:href="#home"></use>
+          </svg>
+          Courses
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" aria-current="page">
+          <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true">
+            <use xlink:href="#home"></use>
+          </svg>
+          Assignments
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="container">
+    {% if messages %}
+    <div class="container mt-3">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <h2>My Course</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Title</th>
+          <th scope="col">Category</th>
+          <th scope="col">Price</th>
+          <th scope="col">Date</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for course in myCourses %}
+        <tr>
+          <td>{{ course.id }}</td>
+          <td>{{ course.title }}</td>
+          <td>{{ course.category }}</td>
+          <td>{{ course.price }}</td>
+          <td>{{ course.created_at }}</td>
+          <td>
+            <form method="post" action="{% url 'enroll' course.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary">Enroll</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

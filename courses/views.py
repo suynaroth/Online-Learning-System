@@ -1,23 +1,8 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import CourseForm,SubmissionForm,CategoryForm,TagForm,LessonForm,AssignmentForm
 from .models import Course,Tag,Instructor,Category,Assignment, Submission,Lesson
 from enrollments.models import Enrollment
-
-def create_course(request):
-    if request.method == 'POST':
-        form = CourseForm(request.POST)
-        if form.is_valid():
-            course = form.save(commit=False)
-            course.created_by = request.user  # Assuming the user is logged in
-            course.instructor = request.user.instructor
-            course.save()
-            form.save_m2m()  # Save many-to-many relationships
-            return redirect('course_list')  # Redirect to a course list or detail view
-    else:
-        form = CourseForm()
-    
-    return render(request, 'courses/create_course.html', {'form': form})
 
 @login_required
 def course_list(request):
@@ -43,6 +28,21 @@ def course_list(request):
                                                              'instructors': instructors
                                                              })
 @login_required
+def create_course(request):
+    if request.method == 'POST':
+        form = CourseForm(request.POST)
+        if form.is_valid():
+            course = form.save(commit=False)
+            course.instructor = request.user.instructor
+            course.created_by = request.user 
+            course.save()
+            form.save_m2m()  
+            return redirect('course_list') 
+    else:
+        form = CourseForm()
+    return render(request, 'courses/create_course.html', {'form': form, 'title': 'Create Course'})  
+
+@login_required
 def student_course_list(request):
     if hasattr(request.user, 'student'):
         student = request.user.student
@@ -53,6 +53,17 @@ def student_course_list(request):
             'enrolled_courses': enrolled_courses,
         }
         return render(request, 'courses/student_course_list.html', context)
+    else:
+        return redirect('/')
+    
+def instrctor_course_list(request):
+    if hasattr(request.user, 'instructor'):
+        instructor = request.user.instructor
+        myCourses = Course.objects.filter(instructor=instructor)
+        context = {
+            'myCourses': myCourses,
+        }
+        return render(request, 'courses/instructor_course_list.html', context)
     else:
         return redirect('/')
 
@@ -126,3 +137,17 @@ def submit_assignment(request, assignment_id):
     else:
         form = SubmissionForm(instance=submission)
     return render(request, 'courses/submit_assignment.html', {'form': form, 'assignment': assignment})
+
+def create_lesson(request, course_id):
+    course = get_object_or_404(Course, id=course_id, instructor=request.user.instructor)
+
+    if request.method == 'POST':
+        form = LessonForm(request.POST, request.FILES)
+        if form.is_valid():
+            lesson = form.save(commit=False)
+            lesson.course = course
+            lesson.save()
+            return redirect('course_detail', course_id=course.id)
+    else:
+        form = LessonForm()
+    return render(request, 'courses/create_lesson.html', {'form': form, 'course': course})

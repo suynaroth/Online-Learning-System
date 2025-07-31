@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Add Lesson to {{ course.title }}</h2>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-success">Create Lesson</button>
+  <a href="{% url 'course_list' course.id %}" class="btn btn-secondary">Cancel</a>
+</form>
+
+{% endblock %}
+  

@@ -10,9 +10,10 @@ def instructor_profile(request):
 
         if instructor_form.is_valid() and user_form.is_valid():
             # Create user and instructor
-            user = user_form.save()
-            instructor = instructor_form.save(commit=False)
-            user.role = 'instructor' 
+            user = user_form.save(commit=False)
+            user.role = 'instructor'
+            user.save()  # Save user first to get user.id
+            instructor = instructor_form.save(commit=False) 
             instructor.user = user
             instructor.save()
             return redirect('instructor_list')
