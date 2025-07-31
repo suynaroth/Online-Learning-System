@@ -72,12 +72,12 @@
                     <div class="card-body">
                         <h5 class="card-title">My Courses</h5>
                         <ul class="list-group list-group-flush">
-                            {% for course in enrolled_courses %}
+                            {% for course in myCourses %}
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 {{ course.title }}
                             </li>
                             {% empty %}
-                            <li class="list-group-item">No courses enrolled.</li>
+                            <li class="list-group-item">No courses created.</li>
                             {% endfor %}
                         </ul>
                     </div>

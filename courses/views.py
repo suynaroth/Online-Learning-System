@@ -41,6 +41,26 @@ def create_course(request):
     else:
         form = CourseForm()
     return render(request, 'courses/create_course.html', {'form': form, 'title': 'Create Course'})  
+@login_required
+def edit_course(request, course_id):
+    course = get_object_or_404(Course, id=course_id, instructor=request.user.instructor)
+    form = CourseForm(request.POST or None, instance=course)
+    if request.method == 'POST':
+        form = CourseForm(request.POST, instance=course)
+        if form.is_valid():
+            form.save()
+            return redirect('instructor_course_list')
+    else:
+        form = CourseForm(instance=course)
+    return render(request, 'courses/edit_course.html', {'form': form, 'title': 'Edit Course'})
+
+@login_required
+def delete_course(request, course_id):
+    course = get_object_or_404(Course, id=course_id, instructor=request.user.instructor)
+    if request.method == 'POST':
+        course.delete()
+        return redirect('instructor_course_list')
+    return render(request, 'courses/delete_course.html', {'course': course})
 
 @login_required
 def student_course_list(request):
@@ -55,7 +75,7 @@ def student_course_list(request):
         return render(request, 'courses/student_course_list.html', context)
     else:
         return redirect('/')
-    
+@login_required
 def instrctor_course_list(request):
     if hasattr(request.user, 'instructor'):
         instructor = request.user.instructor
@@ -67,7 +87,7 @@ def instrctor_course_list(request):
     else:
         return redirect('/')
 
-
+@login_required
 def category_list(request):
     categories = Category.objects.all()
     return render(request, 'courses/category_list.html', {'categories': categories})
@@ -83,7 +103,7 @@ def add_category(request):
     return render(request, 'courses/add_category.html', {'form': form, 'title': 'Add Category'})
 
 
-
+@login_required
 def edit_category(request, category_id):
     category = Category.objects.get(id=category_id)
     category_form = CategoryForm(request.POST or None, instance=category)
@@ -91,18 +111,19 @@ def edit_category(request, category_id):
         category_form.save()
         return redirect('category_list')
     return render(request, 'courses/edit_category.html', {'category_form': category_form, 'title': 'Edit Category'})
-
+@login_required
 def delete_category(request, category_id):
     category = Category.objects.get(id=category_id)
     if request.method == 'POST':
         category.delete()
         return redirect('category_list')
     return render(request, 'courses/delete_category.html', {'category': category})
-
+@login_required
 def tag_list(request):
     tags = Tag.objects.all()
     return render(request, 'courses/tag_list.html', {'tags': tags})
 
+@login_required
 def add_tag(request):
     if request.method == 'POST':
         name = request.POST.get('name')
